@@ -2,9 +2,9 @@ import asyncio
 from itertools import count
 from telegram.ext import Application
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from common.config import settings
-from common.media import iter_media_files, send_media
-from common.utils import setup_logger
+from config import settings
+from media import iter_media_files, send_media
+from utils import setup_logger
 
 logger = setup_logger("bot_vip")
 
