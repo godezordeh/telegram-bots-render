@@ -10,7 +10,6 @@ logger = setup_logger("bot_vip")
 
 MSG = "🔞 Conteúdo VIP liberado! Aproveite!"
 CAPTION = MSG
-
 _counter = count(0)
 
 async def tick(app: Application):
@@ -33,10 +32,18 @@ async def tick(app: Application):
     await send_media(bot, settings.GROUP_ID, item, caption=CAPTION)
     logger.info(f"VIP enviado: {item} (idx={idx})")
 
-def main():
+async def _run():
     app = Application.builder().token(settings.BOT_TOKEN).build()
+    await app.initialize()
+    await app.bot.delete_webhook(drop_pending_updates=True)
+
     scheduler = AsyncIOScheduler(timezone=settings.TIMEZONE)
     scheduler.add_job(lambda: asyncio.create_task(tick(app)), "interval", hours=settings.INTERVAL_HOURS)
     scheduler.start()
-    logger.info("Scheduler iniciado (VIP).")
-    app.run_polling(allowed_updates=[])
+    logger.info("Scheduler iniciado (VIP) — sem polling.")
+
+    await app.start()
+    await asyncio.Event().wait()
+
+def main():
+    asyncio.run(_run())
