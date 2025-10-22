@@ -3,8 +3,8 @@ from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
-from common.config import settings
-from common.utils import setup_logger
+from config import settings
+from utils import setup_logger
 
 logger = setup_logger("bot_pagamento")
 
