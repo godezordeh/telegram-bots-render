@@ -1,0 +1,61 @@
+services:
+  - type: worker
+    name: bot-previa
+    env: docker
+    plan: starter
+    envVars:
+      - key: BOT_ENTRY
+        value: bots.bot_previa:main
+      - key: BOT_TOKEN
+        sync: false
+      - key: GROUP_ID
+        sync: false
+      - key: TIMEZONE
+        value: America/Sao_Paulo
+      - key: INTERVAL_HOURS
+        value: "6"
+      - key: MEDIA_DIR
+        value: media/previas
+      - key: MEDIA_URLS_JSON
+        sync: false
+
+  - type: worker
+    name: bot-vip
+    env: docker
+    plan: starter
+    envVars:
+      - key: BOT_ENTRY
+        value: bots.bot_vip:main
+      - key: BOT_TOKEN
+        sync: false
+      - key: GROUP_ID
+        sync: false
+      - key: TIMEZONE
+        value: America/Sao_Paulo
+      - key: INTERVAL_HOURS
+        value: "6"
+      - key: MEDIA_DIR
+        value: media/vip
+      - key: MEDIA_URLS_JSON
+        sync: false
+
+  - type: web
+    name: bot-pagamento
+    env: docker
+    plan: starter
+    envVars:
+      - key: BOT_ENTRY
+        value: bots.bot_pagamento:main
+      - key: BOT_TOKEN
+        sync: false
+      - key: VIP_GROUP_ID
+        sync: false
+      - key: CHECKOUT_URL_TMPL
+        sync: false
+      - key: GATEWAY_WEBHOOK_SECRET
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: TIMEZONE
+        value: America/Sao_Paulo
+    healthCheckPath: /health
