@@ -1,4 +1,4 @@
-import asyncio, os
+import asyncio
 from itertools import count
 from telegram.ext import Application
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -10,8 +10,7 @@ logger = setup_logger("bot_previa")
 
 MSG = "🔥 Prévia exclusiva! Quer ver tudo? Entre no VIP!"
 CAPTION = MSG
-
-_counter = count(0)  # index simples para round-robin
+_counter = count(0)
 
 async def tick(app: Application):
     bot = app.bot
@@ -33,10 +32,21 @@ async def tick(app: Application):
     await send_media(bot, settings.GROUP_ID, item, caption=CAPTION)
     logger.info(f"Prévia enviada: {item} (idx={idx})")
 
-def main():
+async def _run():
     app = Application.builder().token(settings.BOT_TOKEN).build()
+    await app.initialize()
+    # Garante que não existe webhook configurado (evita conflito com polling remoto antigo)
+    await app.bot.delete_webhook(drop_pending_updates=True)
+
     scheduler = AsyncIOScheduler(timezone=settings.TIMEZONE)
     scheduler.add_job(lambda: asyncio.create_task(tick(app)), "interval", hours=settings.INTERVAL_HOURS)
     scheduler.start()
-    logger.info("Scheduler iniciado (prévia).")
-    app.run_polling(allowed_updates=[])
+    logger.info("Scheduler iniciado (prévia) — sem polling.")
+
+    # Start do bot (necessário para inicializar o request), mas sem polling
+    await app.start()
+    # Mantém o processo vivo
+    await asyncio.Event().wait()
+
+def main():
+    asyncio.run(_run())
