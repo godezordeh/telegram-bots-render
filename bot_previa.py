@@ -5,6 +5,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import settings
 from media import iter_media_files, send_media
 from utils import setup_logger
+
 logger = setup_logger("bot_previa")
 
 MSG = "🔥 Prévia exclusiva! Quer ver tudo? Entre no VIP!"
